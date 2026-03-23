@@ -3,7 +3,7 @@ import { usersService } from '../services/users-service'
 
 export const usersRoute = new Elysia({ prefix: '/api/users' })
   .post(
-    '/',
+    '',
     async ({ body, set }) => {
       try {
         return await usersService.registerUser(body)
@@ -21,6 +21,23 @@ export const usersRoute = new Elysia({ prefix: '/api/users' })
         name: t.String({ minLength: 1 }),
         email: t.String({ format: 'email' }),
         password: t.String({ minLength: 6 }),
+      }),
+    }
+  )
+  .post(
+    '/login',
+    async ({ body, set }) => {
+      try {
+        return await usersService.loginUser(body)
+      } catch (error: any) {
+        set.status = 401
+        return { error: error.message || 'Email atau password salah' }
+      }
+    },
+    {
+      body: t.Object({
+        email: t.String({ format: 'email' }),
+        password: t.String(),
       }),
     }
   )
