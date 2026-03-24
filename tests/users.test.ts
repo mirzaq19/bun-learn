@@ -20,7 +20,7 @@ describe('Users API', () => {
         }),
       })
 
-      const body = await response.json()
+      const body: any = await response.json()
       expect(response.status).toBe(200)
       expect(body.data).toBe('OK')
     })
@@ -44,7 +44,7 @@ describe('Users API', () => {
         body: JSON.stringify(payload),
       })
 
-      const body = await response.json()
+      const body: any = await response.json()
       expect(response.status).toBe(409)
       expect(body.error).toBe('Email sudah terdaftar')
     })
@@ -101,7 +101,7 @@ describe('Users API', () => {
         }),
       })
 
-      const body = await response.json()
+      const body: any = await response.json()
       expect(response.status).toBe(200)
       expect(body.data).toBeDefined()
     })
@@ -143,13 +143,13 @@ describe('Users API', () => {
         }),
       })
 
-      const { data: token } = await loginRes.json()
+      const { data: token }: any = await loginRes.json()
 
       const response = await fetch(`${BASE_URL}/users/current`, {
         headers: { 'Authorization': `Bearer ${token}` },
       })
 
-      const body = await response.json()
+      const body: any = await response.json()
       expect(response.status).toBe(200)
       expect(body.data.email).toBe(payload.email)
     })
@@ -183,7 +183,7 @@ describe('Users API', () => {
         }),
       })
 
-      const { data: token } = await loginRes.json()
+      const { data: token }: any = await loginRes.json()
 
       const response = await fetch(`${BASE_URL}/users/logout`, {
         method: 'DELETE',
