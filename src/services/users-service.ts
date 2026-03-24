@@ -4,6 +4,14 @@ import { eq } from 'drizzle-orm'
 import { randomUUID } from 'crypto'
 
 export const usersService = {
+  /**
+   * Mendaftarkan pengguna baru ke dalam sistem.
+   * Fungsi ini mengecek apakah email sudah terdaftar, melakukan hashing pada password,
+   * lalu menyimpan data pengguna baru tersebut ke dalam database.
+   *
+   * @param payload Data pengguna yang ingin didaftarkan (nama, email, password)
+   * @returns Object dengan pesan berhasil jika sukses mendaftar
+   */
   async registerUser(payload: typeof users.$inferInsert) {
     // 1. Check if user with email already exists
     const [existingUser] = await db
@@ -31,6 +39,14 @@ export const usersService = {
     return { data: 'OK' }
   },
 
+  /**
+   * Melakukan proses otentikasi (login) pengguna.
+   * Fungsi ini memvalidasi kecocokan email dan password, 
+   * kemudian membuat dan menyimpan token sesi baru jika kredensial valid.
+   *
+   * @param payload Kredensial atau data login pengguna (email dan password)
+   * @returns Object yang berisi token sesi otentikasi
+   */
   async loginUser(payload: Pick<typeof users.$inferInsert, 'email' | 'password'>) {
     // 1. Find user by email
     const [user] = await db
@@ -62,6 +78,13 @@ export const usersService = {
     return { data: token }
   },
 
+  /**
+   * Mengambil data profil pengguna yang saat ini sedang login.
+   * Fungsi ini memverifikasi token sesi dan mengambil data pengguna terkait dari database.
+   *
+   * @param token Token sesi otentikasi yang sedang aktif
+   * @returns Object berisi informasi profil pengguna (id, name, email, createdAt)
+   */
   async getCurrentUser(token: string) {
     // 1. Find session and join with users table
     const [result] = await db
@@ -83,6 +106,13 @@ export const usersService = {
     return { data: result }
   },
 
+  /**
+   * Mengeluarkan pengguna dari sistem (logout).
+   * Fungsi ini akan menghapus token sesi aktif dari database sehingga tidak dapat digunakan lagi.
+   *
+   * @param token Token sesi otentikasi yang ingin dihapus
+   * @returns Object dengan pesan berhasil jika token telah dihapus
+   */
   async logoutUser(token: string) {
     // 1. Delete session from database
     const [result]: any = await db.delete(sessions).where(eq(sessions.token, token))
