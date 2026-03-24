@@ -22,6 +22,10 @@ export const usersRoute = new Elysia({ prefix: '/api/users' })
         email: t.String({ format: 'email', maxLength: 255 }),
         password: t.String({ minLength: 6, maxLength: 255 }),
       }),
+      detail: {
+        tags: ['Users'],
+        summary: 'Register a new user',
+      },
     }
   )
   .post(
@@ -39,6 +43,10 @@ export const usersRoute = new Elysia({ prefix: '/api/users' })
         email: t.String({ format: 'email', maxLength: 255 }),
         password: t.String({ maxLength: 255 }),
       }),
+      detail: {
+        tags: ['Users'],
+        summary: 'Login and generate session token',
+      },
     }
   )
   .derive(({ headers }) => {
@@ -60,7 +68,15 @@ export const usersRoute = new Elysia({ prefix: '/api/users' })
       set.status = 401
       return { error: 'Unauthorized' }
     }
-  })
+    },
+    {
+      detail: {
+        tags: ['Users'],
+        summary: 'Get current authorized user info',
+        security: [{ BearerAuth: [] }],
+      },
+    }
+  )
   .delete('/logout', async ({ token, set }) => {
     if (!token) {
       set.status = 401
@@ -73,4 +89,12 @@ export const usersRoute = new Elysia({ prefix: '/api/users' })
       set.status = 401
       return { error: 'Unauthorized' }
     }
-  })
+    },
+    {
+      detail: {
+        tags: ['Users'],
+        summary: 'Logout and invalidate session token',
+        security: [{ BearerAuth: [] }],
+      },
+    }
+  )
