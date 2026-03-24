@@ -221,7 +221,7 @@ describe('Users API', () => {
         }),
       })
 
-      const { data: token } = await loginRes.json()
+      const { data: token }: any = await loginRes.json()
 
       await fetch(`${BASE_URL}/users/logout`, {
         method: 'DELETE',
